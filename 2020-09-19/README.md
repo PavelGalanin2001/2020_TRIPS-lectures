@@ -1,0 +1,339 @@
+![](imgs/1.jpg)
+
+Как видно из схемы `Managed` разбивается на два уровня:
+
+- .
+- Manage управляемый
+
+Управляемый уровень содержит код, исполняемый под управлением общеязыковой среды `CLR` (Command Language R...)
+
+Cостоит этот управляемый API со следующий компонентов:
+
+- `PresentationFramework.dll` - эта библиотека содержит основные реализации компонентов
+  и элементов управления, которое используются при построении графического интерфейса. Это окна панели.
+  Плюс тут содержаться типы для реализации высокоуровневых абстракций, такие как стили.
+
+- `PresentationCore.dll` - содержит все базовые типы из предыдущей библиотеки (предыдущего класса) `PresentationFramework`.
+
+- `WindowsBase.dll` - вспомогательные классы, которые используюся `.PF`
+
+Уровень `Unmanaged API` - служит для интерации `Unmanaged API` с `DirectX`
+
+тоже состоит из библиотек `milcore.dll` обеспечивает интеграцию компонентов.
+
+`WindowsCodecs.dll` - предоставляет низкоуровневую подержку для изображений в программировании машиных кодах
+
+`DirectX` - производит визуализацию компонетов приложений, также производит низкоуровневую обработку, такую как трансляция
+
+`User32` не используется `.Pf`, но все же иногда для ряд задач используется для редиенга. Не используется для вычислительных целей
+
+![](imgs/2.jpg)
+
+Какие классы принадлежат этой Dll?
+
+- `System.Threading.DispatcherObject`
+  
+    Приложение `.PF` использует однопоточную модель `STA` (Single T A). Чтобы эту однопоточную модель реализовать, каждое приложение управляется диспетчером. Этот диспетчер координирует обработку сообщений. Диспетчер `Object` стоит верху. Поэтому он обладает его свойствами. Поэтому мы может удостовериться выполняется ли он в правильном потоке напривить код в интерфейс
+
+- Класс `System.Windows.DependencyObject`
+  
+    Он позволяет `.PF` подерживать мощную модель свойств зависимости. Эти свойства зависимости помогают  наследовать значения по умолчанию, экономить хранение информации свойст. Наследуюся от этого класса. Получает поддержку свойств зависимости.
+
+- `System.Windows.Media.Visual`
+  
+    Любой класс наследуюемый от `Visual` имеет свойства отображаться в окне. Класс `Visual` интерпулирует инструкции рисования, включает прорачность, настройки трансформации фигур и так далее. Так же имено он обезбечивает связь между `mincore.dll` и управляемыми библиотеками `.PF`
+
+- `System.Windows.UIElement`
+  
+    Этот класс добавляет поддержку таких сущностей как
+  
+  - компоновка
+  
+  - ввод
+  
+  - фокус событий
+    
+    Также он вводит поддержку расширеной системы передачи событий, которая называется маршрутизированными событиями.
+
+- Класс `System.Windows.FrameworkElement`
+  
+    Добавляет проверку привязки данных
+  
+  - анимации
+  - стили
+  - ресурсы
+
+- `System.Windows.Controls.Control`
+  
+    `Control` - это класс, который может взаимодействовать с пользователями.
+  
+    Это
+  
+  - блок
+  
+  - текст
+  
+  - кнопки
+    
+    Класс Control добавляет свойство
+  
+  - для установки шрифта
+  
+  - цвета фона
+  
+  - цвета переднего фона
+    
+    Самая интересная деталь - поддержка шаблонов. Благодаря шаблонам можно изменить стандарнтный вид элемента на свой собственный.
+
+- `System.Windows.Control.ContentControl`
+  
+    Это базовый класс для всех элементов, у которого есть фрагмент содержимого. Причем содержимое может вальироваться от строки до панели, которая содержит другие элементы управления.
+
+- `System.Windows.ItemsControl`
+  
+    Это родительский класс для всех элементов, управления которые отображают карекцию каких-то единиц информации, например, `ListBox`
+  
+    Исполязуя цвет этого класса `List` можно трансформировать
+  
+  - в список флажков
+  - в ряд картинок
+  - или комбинировать эти элементы.
+
+- сшейпс сшейпс
+    От этого класса наследуется фигуры
+  
+  - `Rectangle`
+  
+  - `Elips`
+    
+    Эти фигуры могут быть используваться с традициоными элементами в виде кнопок или текстового поля
+
+- `System.Windows.Control.Panel`
+    Базовый класс для всх контейнеров компановки.
+  
+    <u>Контейнеры компоновки</u> - компоненты, которые содержат дочерние элементы и упорядочивают в определености с правилом размещения.
+
+<div style="page-break-after: always;"></div>
+
+# Файлы отдельного кода
+
+<!--
+    Мы говорили что есть файлы
+    mainWIndows
+    и работабщий снимок
+
+    В файле с окончанием .cs находится логика приложения которая свзя
+    в xamlюсы cjlth;bncz kjubrf cdzpfy с xaml
+-->
+
+```xml
+<Window x:Class="XamlApp.MainWindow"
+```
+
+В первой строчке есть атрибут `x:Class`. Этот атрибут указывает на класс, который будет представлять данное окно и, который будет компилироваться код `XAML`. То есть, во премя компиляции будет компилировать класс `XamlApp.MainWindow`, который наследуется от класса `MainWindows : Windows`.
+
+Этот код создается по умолчанию:
+
+```csharp
+using System;
+using System.Collections.Generic;
+using System.Ling;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Document;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shaped;
+
+namespace XamlApp
+{
+    public partial class MainWindow : Window
+    {
+        public MainWindow()
+        {
+            InitializeComponent();
+        }
+    }
+}
+```
+
+По сути он пустой, но он выполняет определеные действия. Он во время компиляции объединяется с классом.
+
+В `C#` `partial` обозначет, что это часть класса.
+
+Метод инициал компонент через этот метод класс мэйн циндов вызывает скоплирируемый ранее код XAML. Разбирает его и строет графический интерфейс окна.
+
+<div style="page-break-after: always;"></div>
+
+Как может взаимодействовать `С#` и `XAML`?
+
+Взаимодействие `C#` и `XAML`
+
+```xml
+<Window
+	x:Class="XamlApp.MainWindow"
+	xmlns="https://schemas.microsoft.com/winfs/2006/xaml/presentation"
+	xmlns:x="https://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="https://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="https://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:local="clr-namespace:XamlApp"
+	ms:Ignorable="d"
+	Title="MainWindows"
+	Height="350"
+	Width="525"
+>
+	<Grid x:Name="grid1">
+		<TextBox
+			x:Nmae="textBox1"
+			Width="150"
+			Height="30"
+			VerticalAligment="Top"
+			Margin="20"
+		/>
+		<Button
+			x:Name="button1"
+			Width="100"
+			Height="30"
+			Content="Кнопка"
+			Click="Button_Click"
+		/>
+	</Grid>
+</Window>
+```
+
+```csharp
+using System.Windows;
+
+namespace XamlApp
+{
+	public partial class MainWindow : Window
+	{
+		public MainWindow()
+		{
+			InitializaComponent();
+		}
+
+		private void Button_Click(object sender, RoutedEventArgs e)
+		{
+			string text = textBox1.Text;
+			if (text != "")
+			{
+				MessageBox.Show(text);
+			}
+		}
+	}
+}
+```
+
+1. Если нужно обратиться в элементу `TextBox`, `Button`, для этого устанавливется свойство `Name`.
+
+2. Точкой взаимодействия являются события с помощью атрибутов `XAML` можно создать событие, которое будет связана с обработчиками в коде `C#`. В даном случае в обработчике выводится сообщение, которое введено текстовое поле. После определения обработчика можно связать с обработчиком с событием, нажатием кнопки через атрибут `Click`.
+
+Наиболее часто используемые события:
+
+- `Click` - Происходит при нажатии на элемент управления
+- `MouseMove` - Происходит, когда указатель мыши совершает движение по этому элементу
+- `MouseEnter` - Происходит, когда указатель мыши входит в границы данного элемента
+- `MouseLeave` - Происходит, когда указатель мыши покидает границы данного элемента
+- `MouseDown` - Происходит при нажатии кнопки мыши, если указатель мыши находится на элементе
+- `MouseUp` - Происходит, когда кнопка мыши отпускается на элементе
+- `MouseWhell` - Происходит при прокрутке пользователем колесика мыши, если указатель мыши находится на элементе
+- `KeyDown` - Происходит при нажатии клавиши, если элемент имеет фокус
+- `KeyUp` - Происходит при отжатии клавиши, если элемент имеет фокус
+
+`object sender` - объект с помощью которого можно получить доступ к объекту. Получаем доступ к элементу для которого возникло событие.
+
+`RoutedEventArgs e` - класс, который имеед ряд свойств - источнико события, `RoutedEvent` - возвращает имя собатия хендл, которое имеет значение `true` и `false` и определяет событие будет подниматься или опускаться по дереву.
+
+Посмотрим пример создания кнопки не используя `XAML`. Создание элемента не простредствено в коде `C#` 
+
+```csharp
+using System.Windows;
+using System.Windows.Controls;
+
+namespace XamlApp
+{
+	public partial class MainWindow : Window
+	{
+		public MainWindow()
+		{
+			InitializeComponent();
+
+			Button myButton = new Button();
+			myButton.Width = 100;
+			myButton.Height = 30;
+			myButton.Content = "Кнопка";
+			layoutGrid.Children.Add(myButton);
+		}
+	}
+}
+```
+
+Для начала есть `Grid`, `LayoutGrid` и в этот `Grid` помещается кнопка.
+
+`Grid` - компонент компоновки. Собирает другие элементы.
+
+<div style="page-break-after: always;"></div>
+
+Пространство имен из `C#` в `XAML`
+
+
+```csharp
+public classPhone
+{
+	public string Name
+	{
+		get;
+		set;
+	}
+
+	public override string ToString()
+	{
+		return $"Смартфон {this.Name}; цена: {this.Price}";
+	}
+}
+```
+
+По умолчанию в определении элемента `Windows` подключается локальное пространство имён: `xmlns:local="clr-namespace:XamlApp"`. Локальное пространство имен, как правило, называется по имени проекта
+и позволяет влючить все классы, которые влючены в коде `C#` в вашем проекте. Например, если добавть в проект этот класс `Phone`. Добавив этот класс можем использ
+
+```xml
+<Window
+	x:Class="XamlApp.MainWindow"
+	xmlns="https://schemas.microsoft.com/winfs/2006/xaml/presentation"
+	xmlns:x="https://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="https://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="https://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:local="clr-namespace:XamlApp"
+	ms:Ignorable="d"
+	Title="MainWindows"
+	Height="350"
+	Width="525"
+>
+	<Grid x:Name="layoutGrid">
+		<Button
+			x:Name="phoneButton"
+			Width="250"
+			Height="40"
+			HorizontalAligment="Center"
+		>
+			<Button.Content>
+				<local:Phone
+					Name="Lumia 950"
+					Price="700"
+				/>
+			</Button.Content>
+		</Button>
+	</Grid>
+</Window>
+```
+
+Так как пространстов имен проекцируется на префикс `:local`, то все классы проекта используются в форме
+`local:названиеКласса`
+
+В примере объект `Phone` устанавливается в качесве содержимого кнопки через свойство кнопки `.Сontent`. Это свойство `.Сontent` принимает строковое представление, которое возвращается методом `ToString()`.
