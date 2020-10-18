@@ -1,0 +1,273 @@
+>>slide 1
+
+Источник данных для привязки может быть заданан при помощи следующих свойств объекта Binding
+
+Element Source, Relative SOurceУдуьуте Ыщгксу Кудфешму Ыщгксу
+
+Эти свойства являются взаимо исключающими
+
+Установив один остальные следует сбросить, иначе при выполнении привязки инициализируется исключение
+
+Строкое свойство Element Name Удобно использовать, чтобы определить в качестве источника данных элемент, который принадлежит одному логиечскому дереву вместе с целевым объектом
+
+Этот элемент должен иметь в себя имя, которое указывается в Element Name.
+
+Кроме ELement Name обычно задается свойство path, определяющий путь к извлекаемым из элемента данным.
+
+Path имеет тип System.Windows.PropertyPath
+
+КОгда работаем в XAML нужно иметь в виду, что существует стандартный конвертер из строки в объект PropertyPath.
+
+Class binting имеет перегруженый конструктор, принимающий строку, трактуюмую как значение свойства path.
+
+```xml
+<!-- Path задан как аргумент конструктора Binding -->
+<TextBlock Text="{Binding Value, ElementName=slider}" />
+```
+
+Свойство Path формируется по следующим правилам. В простейших случает имеет
+имя свойства в ичтонике данных имя.патч = проперти.нэйм
+
+Для указаня свойст облегирующих объекто использует точку
+
+```csharp
+Path = Property
+```
+
+Для ссылки на присоединеное свойство (Записывается в круглых скобках):
+
+```csharp
+Path = (DockPanel.Dock)
+```
+
+Свойства SOurce дает возможность указать в качестве источника привязки произвольный объект
+
+В следующем примере привязка является к объекту класса Phone
+
+```csharp
+class Phone
+{
+	public string Title {get; set;}
+	public string Company {get; set;}
+	public int Price {get; set;}
+}
+```
+
+Этот объект сохранен в ресурсах 
+
+>>slide
+
+```xml
+<Wndow>
+
+```
+
+>>Этот класс должен момещен в main windows
+
+>> результат на слайде
+
+3. Свойства привязки Relative source позволяет задать источник данных на основе отношений к прямогу объекту.
+
+Например, можно использовать это связку для привязки элемента самому себе, или к элементу находящегося на несколько элементов вверх в логическом дерефе элементов.
+
+Для установки свойства используется объект `System.Windows.Data.RelativeSource`
+
+Ukfdysqv 'ktvtynfv 'njuj j,]trnf zdkztncz cdjqcndj ТгNull
+
+Принимающее значение из перечисления Relative Source mode
+
+>> clide
+
+Среди них есть Self и FindAncestor
+
+Self привязка осуществляется к свойству этого же элемента.
+FindAncestor: привязка осуществляется к свойству элемента-контейнера
+
+ПРимер
+
+```xml
+<TextBox Text = "{Binding RelativeSource={RelativeSource Mode=Self}}, PAth=Background, Mode=TwoWay, UpdateSourceTrigger=PropertyyChanged">
+```
+
+Здесь цвет и фоновый цвет... связан двустороней привязкой
+
+Может увидеть в поле числовое значение цвета, поменять его и вместе с ним изменится фон поля.
+
+ПРимер привязки к свойству контейнера
+
+```xml
+<Grid Background="Black">
+    <TextBlock Foreground="White"
+        Text="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Grid}}, Path = Background}"
+    />
+</Grid>
+```
+
+В этом режиме надо указывать параметр Ancestor Type и передавать тип контейнера.
+
+# Заголовок Свойства Data Context
+
+У объекта FrameworkElement от которого наслеуются элементы управления, есть свйоство DataCOntent, который позволяет для лементов и вложеных элементов некоторый контекст данных.
+
+Тогда вложеные элементы могут использовать объект Binding для привязки к конкретным свойствам этого контекста.
+
+
+```xml
+<Window ...>
+    <Windows.Resources>
+        <local:Phone
+            x:Key="nexusPhone"
+            Title="Nexus X5"
+            Company="Google"
+            Price="25000"
+        />
+    </Windows.Resources>
+
+    <Grid
+        Background="Black"
+        DataContext="{StaticResource nexusPhone}"
+        TextBlock.Foreground="White"
+    >
+        <GridюСщдгьтВу>
+
+        </Grid>
+    </Grid>
+</Window>
+```
+
+> В примере задаем Data Context и задаем некоторому листу
+
+>Если привязке не задано их эдног из свойст Relative Source, источник данных определяется на основе значения свойства DataContext Целевого объекта
+
+>Если у целевого объекта это свойства не установлено будет выполнен поиск по дереву элемента, для нахождения первого родитедльского DataContext неравного NULL.
+
+# Свойство TargetNullValue
+
+>На случай если свййство в ичточнике привязки имеет знаечение NULL, то есть не установлено, мы можем задать значение по умолчанию.
+
+>Здесь в примере у нас не установлен Title, поэтому тектовый блок будет выводить значение по умолчание указанное в параметре `TargetNullValue`
+
+# Обновление привязки
+
+>Одностороняя привяка от источника к приемнику фактически изменяет свойства приемника,
+но если используетм двусторонюю привязку, этого не происходит.
+
+>Свойства UpdateSourceTrigger класса Binding задает как будет происходить обновлением. Принимает одно значение из перечисления.
+
+>Это может быть PropertyChange, обновляет сразу после свойства примника
+
+
+LostFocus источник привязки обновляется только после потери фокуса
+
+Explicit: источник не обновляется до тех пор, пока не будет вызван метод BindingExpression.Update
+
+Dafault: значение поумолчанию. Для большинства свойств это значение `PropertyChanged`. А для свойств `Text` элемента TextBox это значение `LostFocus`
+
+Пример использования
+
+```xml
+<StackPanel>
+    <TextBox
+        x:Name="textBox1"
+        Height="30"
+    />
+    <TextBox
+        x:Name="textBox2"
+        Height="30"
+        Text="{Binding ElementName=textBox1, Path=Text,
+        Mode=TwoWay},
+        UpdateSourceTrigger = PropertyChanged"
+    />
+</StackPanel>
+
+```
+
+# (Заголовок) Конверторы значений
+
+Отвечают за преобразование данных при переносе из источника в целевое свойство.
+
+И обратное преобразование в случае дву направленой привязки
+
+Для создания конвертора значений требуется выполнить четыре шага:
+
+1. Создать class реализующий интерфейс `IValueConverter`
+2. Применить к классу атрибут `ValueConversion` и специфицировать исходный и целевой тип данных
+typeof(double), typeof(Brush)
+3. Реализовать метод Convert выполняющий преобразование данных от источника к целевому объекту.
+4. Реализовать метод ConvertBack делающий обратное преобразование.
+
+Пример простого конвертора, который преобразует вещественое число в кисть WPF
+
+```csharp
+[ValueConversion(typeof(double), typeof(Brush))]
+public class DoubleToColorConverter: IVAalueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        return (double) value > 18 ? Brushes.Blue : Brushes.Red;
+    }
+
+    public object ConvertBack(object value, Type targetType, object parametr, CultureInfo culture)
+    {
+        // это конвертер для одноправленной привязки
+        return null;
+    }
+}
+```
+
+
+Чтобы ввести действие конвертер значений, нужно использовать свойства привязки `Convertor`
+
+а также при необходимость Convertor Paramet, COnvertor Culture
+которыt передаются в качестве аргументов
+
+Используем
+
+Объект конвертора разместим в ресурсах окна
+
+```csharp
+public  class Person
+{
+    public string Name {get; set;}
+    public double Age {get; set;}
+}
+```
+
+```xml
+<Window.Resources>
+    <Local:DoubleToCOlorConverter x:Key="dc" />
+</Window.Resources>
+
+<Grid Margin="10">
+    <!-- описание структура Grid опущено для краткости -->
+    <TextBlock Grid.Column="0" Grid.Row="0" Text="Name" />
+        <TextBlock Grid.Column="1" Grid.Row="0" Text="{Binding Name, Mode=TwoWay}" />
+
+    <TextBlock Grid.Column="0" Grid.Row="01" Text="Age" />
+
+    <TextBlock Grid.Column="1" Grid.Row="0" Text="{Binding Age, Mode=TwoWay}" Foreground1 />
+
+</Grid>
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
