@@ -20,7 +20,7 @@
         {% endunless %}
 
         <li>
-            <a href="{{ post.url }}">
+            <a href="{{ site.baseurl }}{{ post.url }}">
                 <!-- {{ post.title }} -->
                 <time datetime="{{ post.date | date: "%Y-%m-%d" }}">
                     {{ post.date | date: "%d %B %Y" }}
